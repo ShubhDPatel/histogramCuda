@@ -37,17 +37,24 @@ __global__ void histogram_kernel(unsigned int* input, unsigned int* bins,
     //@@ Declare and clear privatized bins
     __shared__ unsigned int histo_private[32];
 
-    // Since the number of threads per block is 32, and histo_private size is 32, no need for an if statement to check for out of bounds.
-    histo_private[threadIdx.x] = 0;
+    int globalIndex = threadIdx.x + blockIdx.x * blockDim.x;
+    if (globalIndex < num_bins)
+    {
+        histo_private[threadIdx.x] = 0;
+    }
     __syncthreads();
 
     //@@ Compute histogram
-    int i = threadIdx.x + blockIdx.x * blockDim.x;
-    if (i < num_elements)
+    if (globalIndex < num_elements)
     {
-        atomicAdd(&histo_private[input[i]], 1);
+        atomicAdd(&histo_private[input[globalIndex]], 1);
     }
     __syncthreads();
+
+    if (globalIndex < num_bins)
+    {
+        atomicAdd(&bins[globalIndex], histo_private[threadIdx.x]);
+    }
 
     //@@ Commit to global memory
 }
