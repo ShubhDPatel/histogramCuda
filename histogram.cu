@@ -51,12 +51,11 @@ __global__ void histogram_kernel(unsigned int* input, unsigned int* bins,
     }
     __syncthreads();
 
+    //@@ Commit to global memory
     if (globalIndex < num_bins)
     {
         atomicAdd(&bins[globalIndex], histo_private[threadIdx.x]);
     }
-
-    //@@ Commit to global memory
 }
 
 __global__ void convert_kernel(unsigned int* bins, unsigned int num_bins)
