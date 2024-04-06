@@ -34,8 +34,10 @@ __global__ void histogram_kernel(unsigned int* input, unsigned int* bins,
     unsigned int num_elements,
     unsigned int num_bins)
 {
-
     //@@ Declare and clear privatized bins
+    __shared__ unsigned int histo_private[32];
+    histo_private[threadIdx.x] = 0;
+    __syncthreads();
 
     //@@ Compute histogram
 
