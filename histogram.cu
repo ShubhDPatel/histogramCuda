@@ -37,6 +37,7 @@ __global__ void histogram_kernel(unsigned int* input, unsigned int* bins,
     //@@ Declare and clear privatized bins
     __shared__ unsigned int histo_private[NUM_BINS];
 
+    // Coordinate all threads in a block to zero out the privatized bins using blockDim.x as stride
     for (int i = threadIdx.x; i < num_bins; i += blockDim.x)
     {
         histo_private[i] = 0;
@@ -52,6 +53,7 @@ __global__ void histogram_kernel(unsigned int* input, unsigned int* bins,
     __syncthreads();
 
     //@@ Commit to global memory
+    // Coordinate all threads in a block to commit to global memory using blockDim.x as stride
     for (int i = threadIdx.x; i < num_bins; i += blockDim.x)
     {
         atomicAdd(&bins[i], histo_private[i]);
@@ -78,9 +80,11 @@ void histogram(unsigned int* input, unsigned int* bins,
     //@@ zero out bins
     cudaMemset(bins, 0, sizeof(unsigned int) * num_bins);
 
+    const int BLOCK_SIZE = 128;
+
     // Initilize the grid and block dimensions
-    dim3 gridDim((NUM_BINS + 31) / 32, 1, 1);
-    dim3 blockDim(32, 1, 1);
+    dim3 blockDim(BLOCK_SIZE, 1, 1);
+    dim3 gridDim((num_elements + BLOCK_SIZE - 1) / BLOCK_SIZE, 1, 1);
 
     //@@ Launch histogram_kernel on the bins
     {
