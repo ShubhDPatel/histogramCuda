@@ -61,6 +61,14 @@ __global__ void histogram_kernel(unsigned int* input, unsigned int* bins,
 __global__ void convert_kernel(unsigned int* bins, unsigned int num_bins)
 {
     //@@ Ensure bin values are not too large
+    int globalIndex = threadIdx.x + blockIdx.x * blockDim.x;
+    if (globalIndex < num_bins)
+    {
+        if (bins[globalIndex] > 127)
+        {
+            bins[globalIndex] = 127;
+        }
+    }
 }
 
 void histogram(unsigned int* input, unsigned int* bins,
@@ -82,7 +90,7 @@ void histogram(unsigned int* input, unsigned int* bins,
 
     //@@ Launch convert_kernel on the bins
     {
-
+        convert_kernel<<<gridDim, blockDim>>>(bins, num_bins);
         cudaDeviceSynchronize();
     }
 }
