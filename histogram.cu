@@ -35,26 +35,26 @@ __global__ void histogram_kernel(unsigned int* input, unsigned int* bins,
     unsigned int num_bins)
 {
     //@@ Declare and clear privatized bins
-    __shared__ unsigned int histo_private[32];
+    __shared__ unsigned int histo_private[NUM_BINS];
 
-    int globalIndex = threadIdx.x + blockIdx.x * blockDim.x;
-    if (globalIndex < num_bins)
+    for (int i = threadIdx.x; i < num_bins; i += blockDim.x)
     {
-        histo_private[threadIdx.x] = 0;
+        histo_private[i] = 0;
     }
     __syncthreads();
 
     //@@ Compute histogram
-    if (globalIndex < num_bins)
+    int globalIndex = threadIdx.x + blockIdx.x * blockDim.x;
+    if (globalIndex < num_elements)
     {
         atomicAdd(&histo_private[input[globalIndex]], 1);
     }
     __syncthreads();
 
     //@@ Commit to global memory
-    if (globalIndex < num_bins)
+    for (int i = threadIdx.x; i < num_bins; i += blockDim.x)
     {
-        atomicAdd(&bins[globalIndex], histo_private[threadIdx.x]);
+        atomicAdd(&bins[i], histo_private[i]);
     }
 }
 
