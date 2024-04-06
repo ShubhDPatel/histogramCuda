@@ -1,8 +1,8 @@
 histogram : histogram.cu
-	nvcc.exe $<
+	nvcc $<
 
 run : a.exe
-	./a.exe
+	./a.out
 
 clean :
-	rm -f a.exe a.exp a.lib
+	rm -f a.out a.exp a.lib
