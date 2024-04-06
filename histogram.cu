@@ -104,6 +104,8 @@ int main(int argc, char* argv[])
     stw.start();
 
     //@@ Allocate GPU memory here
+    cudaMalloc((void**) &deviceInput, sizeof(unsigned int) * inputLength);
+    cudaMalloc((void**) &deviceBins, sizeof(unsigned int) * NUM_BINS);
 
     cudaDeviceSynchronize();
 
