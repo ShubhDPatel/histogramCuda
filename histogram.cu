@@ -45,7 +45,7 @@ __global__ void histogram_kernel(unsigned int* input, unsigned int* bins,
     __syncthreads();
 
     //@@ Compute histogram
-    if (globalIndex < num_elements)
+    if (globalIndex < num_bins)
     {
         atomicAdd(&histo_private[input[globalIndex]], 1);
     }
@@ -79,7 +79,7 @@ void histogram(unsigned int* input, unsigned int* bins,
     cudaMemset(bins, 0, sizeof(unsigned int) * num_bins);
 
     // Initilize the grid and block dimensions
-    dim3 gridDim(NUM_BINS/32, 1, 1);
+    dim3 gridDim((NUM_BINS + 31) / 32, 1, 1);
     dim3 blockDim(32, 1, 1);
 
     //@@ Launch histogram_kernel on the bins
