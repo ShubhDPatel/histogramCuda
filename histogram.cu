@@ -42,6 +42,12 @@ __global__ void histogram_kernel(unsigned int* input, unsigned int* bins,
     __syncthreads();
 
     //@@ Compute histogram
+    int i = threadIdx.x + blockIdx.x * blockDim.x;
+    if (i < num_elements)
+    {
+        atomicAdd(&histo_private[input[i]], 1);
+    }
+    __syncthreads();
 
     //@@ Commit to global memory
 }
