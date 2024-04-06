@@ -19,7 +19,7 @@
 /*                                                                        */
 /*                                                                        */
 /*                                                                        */
-/* Signed:_____________________________________ Date:_____________        */
+/* Signed: Shubh Patel Date: 04/5/2024                                    */
 /*                                                                        */
 /*                                                                        */
 /* CPSC 677 CUDA Histogram lab, Version 1.02, Spring 2024.                */
