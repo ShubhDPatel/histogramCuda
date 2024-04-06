@@ -55,8 +55,8 @@ void histogram(unsigned int* input, unsigned int* bins,
     cudaMemset(bins, 0, sizeof(unsigned int) * num_bins);
 
     // Initilize the grid and block dimensions
-    dim3 gridDim(NUM_BINS, 1, 1);
-    dim3 blockDim(1, 1, 1);
+    dim3 gridDim(NUM_BINS/32, 1, 1);
+    dim3 blockDim(32, 1, 1);
 
     //@@ Launch histogram_kernel on the bins
     {
