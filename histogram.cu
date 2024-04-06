@@ -52,6 +52,7 @@ void histogram(unsigned int* input, unsigned int* bins,
 {
 
     //@@ zero out bins
+    cudaMemset(bins, 0, sizeof(unsigned int) * num_bins);
 
     //@@ Launch histogram_kernel on the bins
     {
