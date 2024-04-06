@@ -36,6 +36,8 @@ __global__ void histogram_kernel(unsigned int* input, unsigned int* bins,
 {
     //@@ Declare and clear privatized bins
     __shared__ unsigned int histo_private[32];
+
+    // Since the number of threads per block is 32, and histo_private size is 32, no need for an if statement to check for out of bounds.
     histo_private[threadIdx.x] = 0;
     __syncthreads();
 
