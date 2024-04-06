@@ -152,6 +152,8 @@ int main(int argc, char* argv[])
     stw.start();
 
     //@@ Free the GPU memory here
+    cudaFree(deviceInput);
+    cudaFree(deviceBins);
 
     stw.stop();
     printf("Freeing GPU Memory: %f ms\n", stw.getTime());
