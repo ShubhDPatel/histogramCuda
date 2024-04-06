@@ -141,6 +141,7 @@ int main(int argc, char* argv[])
     stw.start();
 
     //@@ Copy the GPU memory back to the CPU here
+    cudaMemcpy(hostBins, deviceBins, sizeof(unsigned int) * NUM_BINS, cudaMemcpyDeviceToHost);
 
     cudaDeviceSynchronize();
 
